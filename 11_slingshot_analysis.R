@@ -58,14 +58,6 @@ ggplot(timecourse_sub, aes(X1, X2))+
 #did not include diff-media in pseudotime density plots
 
 NXP900_df2 <- df2 %>%
-  dplyr::filter(Metadata_compound %in% c("DMSO", "NXP900", "Progenitor", "Diff_Media") & Metadata_concentration %in% c("DMSO" , 10, "Progenitor", "Diff_Media")) %>%
-  dplyr::select(X1, X2, Metadata_compound, Metadata_concentration)
-
-NXP900_rd <- df2 %>%
-  dplyr::filter(Metadata_compound %in% c("DMSO", "NXP900", "Progenitor", "Diff_Media") & Metadata_concentration %in% c("DMSO" , 10, "Progenitor", "Diff_Media")) %>%
-  dplyr::select(X1, X2)
-
-NXP900_df2 <- df2 %>%
   dplyr::filter(!Metadata_compound %in% c("timecourse") & Metadata_concentration %in% c("DMSO" , 10, "Progenitor", "Diff_Media")) %>%
   dplyr::select(X1, X2, Metadata_compound, Metadata_concentration, Metadata_plate)
 
