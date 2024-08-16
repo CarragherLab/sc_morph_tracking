@@ -19,17 +19,15 @@ library(ggpubr)
 #library(RColorBrewer)
 
 
-#########################################8 kmeans clusters current best fit####################################################
-```
+#########################################Gaussian G=5 clusters current best fit####################################################
 
-```{r}
 
 df <- fread("../data/08_cleaned_umap.csv")
 
-```
 
-#slingshot
-```{r}
+
+
+
 
 timecourse <- df %>%
   filter(Metadata_library=="timecourse")
@@ -59,10 +57,10 @@ drugs_rd <- df %>%
   filter(Metadata_library != "timecourse") %>%
   select(X1, X2)
 
-```
 
 
-```{r}
+
+
 
 #for kmeans clusters
 
@@ -78,7 +76,7 @@ for (i in 1:12){
 
 }
 
-#plot clusters on umap for kmeans 1:12 clusters
+#plot clusters on umap for gaussian 5:12 clusters
 for (i in 5:12){
   cl <- Mclust(rd, G = i)$classification
   timecourse_sub$cl <- as.factor(cl)
@@ -89,9 +87,7 @@ for (i in 5:12){
   print(p)
 
 }
-```
 
-```{r}
 #create cluster labels
 cl <- Mclust(rd, G = 5)$classification
 
@@ -104,82 +100,6 @@ ggplot(timecourse_sub, aes(X1, X2))+
   labs(colour="cluster")
 
 fwrite(timecourse_sub, "../data/10_slingshot_clusters.csv")
-
-```
-
-
-```{r}
-sce <- slingshot(as.matrix(rd), clusterLabels = cl, start.clus = "5", end.clus = c("2", "3"))
-
-
-plot(rd, col = viridis(5)[cl], asp = 1, pch = 16)+
-lines(SlingshotDataSet(sce), lwd = 3, col = 'black')
-
-
-plot(rd, col = viridis(5)[cl], asp = 1, pch = 16)+
-lines(SlingshotDataSet(sce), type = "lineages", lwd = 3, col = 'black', show.constraints = TRUE)
-
-
-
-pseudo1 <- as.data.frame(slingPseudotime(sce))
-
-#get vector of pseudotime values, one per data point/cell 
-#(average of pseudotime across all lineages for cells belonging to multiple lineages)
-pseudo_avg <- pseudo1 %>%
-  rowMeans(na.rm=TRUE) 
-
-#create vector of colours baesd on pseudotime
-colors <- viridis(100)
-plotcol <- colors[cut(pseudo_avg, breaks=100)]
-
-png("../outputs/plots/05/slingshot_curves.png", type = "cairo")
-
-
-
-plot(rd, col = plotcol, asp = 1, pch = 16)+
-  lines(SlingshotDataSet(sce), lwd = 3, col = 'black')
-
-```
-```{r}
-
-pto <- SlingshotDataSet(sce) 
-
-newPTO <- slingshot::predict(pto, drugs_rd)
-
-newplotcol <- colors[cut(slingPseudotime(newPTO), breaks=100)]
-
-plot(rd, col = 'grey', bg = 'grey', pch=21, asp = 1)+
-points(slingReducedDim(newPTO), col = newplotcol, pch = 16)+
-lines(SlingshotDataSet(sce), lwd=2, col = 'black')
-
-```
-
-
-
-```{r}
-
-drug_pto <- cbind(drugs_df,slingPseudotime(newPTO))
-
-ecf506 <- drug_pto %>%
-  filter(Metadata_compound %in% c("Progenitor", "DMSO" ,"ECF506") & Metadata_concentration %in% c("DMSO", 10, "Progenitor"))
-
-
-
-my_comparisons <- list( c("DMSO", "ECF506"), c("ECF506", "Progenitor"), c("DMSO", "Progenitor") )
-
-ggplot(ecf506, aes(Metadata_compound, Lineage1)) +
-  geom_boxplot()+
-  geom_jitter()+
-  stat_compare_means(comparisons = my_comparisons)+ # Add pairwise comparisons p-value
-  stat_compare_means(label.y = 30)
-
-ggplot(ecf506, aes(Metadata_compound, Lineage2)) +
-  geom_boxplot()+
-  stat_compare_means(comparisons = my_comparisons)+ # Add pairwise comparisons p-value
-  stat_compare_means(label.y = 25)
-```
-
-
 
 
 
