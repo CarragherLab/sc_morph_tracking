@@ -1,14 +1,5 @@
----
-title: "Untitled"
-output: pdf2_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE, message = FALSE, warning = FALSE, fig.align = 'centre')
-```
 
 
-```{r}
 library(tidyverse)
 library(data.table)
 #library(ggridges)
@@ -18,9 +9,9 @@ library(ggpubr)
 #library(RColorBrewer)
 
 
-```
 
-```{r}
+
+
 
 df <- fread("../data/08_cleaned_umap.csv")
 cl <- fread("../data/10_slingshot_clusters.csv")
@@ -29,16 +20,12 @@ df2 <- df %>%
   mutate(Metadata_compound=case_when(Metadata_compound == "ECF506" ~ "NXP900",
                                      TRUE ~ Metadata_compound ))
 
-```
-
-```{r}
 
 
 theme_set(theme_classic()+ theme(panel.border = element_blank(),
                                  plot.title = element_text(hjust = 0.5, size =20)))
-```
-#slingshot
-```{r}
+
+
 
 timecourse_sub <- df2 %>%
   filter(Metadata_unique %in% cl$Metadata_unique)
@@ -65,9 +52,7 @@ ggplot(timecourse_sub, aes(X1, X2))+
   #scale_colour_viridis_d(option="C")+
   labs(colour="cluster")
 
-```
 
-```{r}
 #get drugs
 
 #did not include diff-media in pseudotime density plots
@@ -89,11 +74,7 @@ NXP900_rd <- df2 %>%
   dplyr::select(X1, X2)
 
 #rm(df2)
-```
 
-
-
-```{r}
 sce <- slingshot(as.matrix(rd), clusterLabels = cl, start.clus = "5", end.clus = c("2", "3"))
 
 curves <- slingCurves(sce, as.df = TRUE)
@@ -114,9 +95,6 @@ geom_path(data = curves %>% arrange(Order),
 
 ggsave("../outputs/11_slingshot_curves.png", p)
 
-```
-
-```{r}
 
 plate <- as.integer(as.factor(timecourse_sub$Metadata_plate))
 
@@ -145,9 +123,7 @@ plotcol <- colors[cut(pseudo_avg, breaks=100)]
 plot(rd, col = plotcol, asp = 1, pch = 16)+
   lines(SlingshotDataSet(sce), lwd = 3, col = 'black')
 
-```
 
-```{r}
 
 pto <- SlingshotDataSet(sce) 
 
@@ -217,10 +193,6 @@ ggplot()+
   geom_path(data = curves %>% arrange(Order),
               aes(x=X1, y=X2, group = Lineage), size=1.5) 
 
-```
-
-
-```{r}
 
 
 table(NXP900_pseudo$lineage, NXP900_pseudo$Metadata_compound)
@@ -283,11 +255,6 @@ p4 <- ggbarplot(test, x="Metadata_compound", y = "perc", add = "mean_sd", color=
 ggsave("../outputs/11_lineage_proportions_barplot.png", p4, width =6, height=4)
 
 
-```
-
-
-```{r}
-
 
 
 
@@ -306,8 +273,6 @@ ggplot(NXP900_pseudo, aes(Metadata_compound, Lineage2, colour = lineage)) +
 
 
 
- 
-
 
 #plot NXP900 hepatocyte lineage only colour by pseudotime for lineage 1
 
@@ -315,7 +280,7 @@ plot(rd, col = 'grey', bg = 'grey', pch=21, asp = 1)+
 points(slingReducedDim(newPTO), col = newplotcol, pch = 16)+
 lines(SlingshotDataSet(sce), lwd=2, col = 'black')
 
-```
+
 
 
 
