@@ -1,14 +1,4 @@
----
-title: "Untitled"
-output: pdf_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE, message = FALSE, warning = FALSE, fig.align = 'centre')
-```
-
-
-```{r}
 library(tidyverse)
 library(data.table)
 #library(ggridges)
