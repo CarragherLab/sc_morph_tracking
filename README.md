@@ -1,6 +1,8 @@
 # sc_morph_tracking
 The script for article "Single-cell morphological tracking of cell states to identify small-molecule modulators of liver differentiation".
 
+This was broken down into small chunks given the size of the single cell data at the start and was run on a supercomputer
+
 **01_subset.R**
 - format and merge timecourse and drug screening data
 
